@@ -1,14 +1,7 @@
 import time
 import socket
 import json
-import numpy as np
-from matplotlib import pyplot as plt
-
-def print_t(str_):
-  print( "[" + time.strftime("%Y-%m-%d %H:%M:%S") + "] " + str(str_))
-  
-def timestamp():
-  return time.strftime("%y%m%dd%Hh%Mm%S")
+from common_functions import *
 
 class CCGame:
   def __init__(self, log_ticks=False):

@@ -1,15 +1,8 @@
+from common_functions import *
 import random
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Dropout
 from tensorflow.keras.models import Model
-
-import numpy as np
-import time
-def print_t(str_):
-  print( "[" + time.strftime("%Y-%m-%d %H:%M:%S") + "] " + str(str_))
-  
-def timestamp():
-  return time.strftime("%y%m%dd%Hh%Mm%S")
 
 """ 
    Deep Q Network 

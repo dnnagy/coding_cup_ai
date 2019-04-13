@@ -1,10 +1,4 @@
-import numpy as np
-import time
-def print_t(str_):
-  print( "[" + time.strftime("%Y-%m-%d %H:%M:%S") + "] " + str(str_))
-  
-def timestamp():
-  return time.strftime("%y%m%dd%Hh%Mm%S")
+from common_functions import *
 
 """
   Implement a class that rewards the DQN agent
