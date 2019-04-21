@@ -85,6 +85,7 @@ class CCGame:
     self.socket.connect((self.tcp_ip, self.tcp_port))
     self.started = True
     self.tickLogs = []
+    self.crashed = False
     
     # Send first messsage
     first_message = {
