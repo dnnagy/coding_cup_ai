@@ -11,7 +11,7 @@ class CCGame:
     self.tcp_port = 12323
     self.team_token = '1iVXOVZK7ldH5Kr6qYCEkZE6xpR0SXZJkyfQayrKfJ2e9S8xdeTjsV9oohjePSsUXFOcDnevsu918'
     self.buffersize = 1024
-    self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.socket = None
     
     self.valid_commands = np.array(["NO_OP", "ACCELERATION", "DECELERATION", "CAR_INDEX_LEFT", "CAR_INDEX_RIGHT", "CLEAR", "FULL_THROTTLE", "EMERGENCY_BRAKE", "GO_LEFT", "GO_RIGHT"])
     
@@ -80,7 +80,8 @@ class CCGame:
   def start(self):
     if self.started == True:
       raise RuntimeError("Game already started.")
-      
+    
+    self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     self.socket.connect((self.tcp_ip, self.tcp_port))
     self.started = True
     self.tickLogs = []
