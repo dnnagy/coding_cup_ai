@@ -34,7 +34,6 @@ class CCGame:
     self.mapMatrix = np.array([mapstrToInt[x] for x in list(mapstr)]).reshape(60,60)
     
     self.started = False
-    
     self.tick_data_prev = None # Previous tick data
     self.tick_data = None # Current tick data 
     

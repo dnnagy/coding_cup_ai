@@ -22,7 +22,7 @@ class DQNAgent:
     self.learning_rate = 0.0005
     self.network_input_shape = (1,)
     self.actions = ["NO_OP", "ACCELERATION", "DECELERATION", "CAR_INDEX_LEFT", "CAR_INDEX_RIGHT", "CLEAR", "FULL_THROTTLE", "EMERGENCY_BRAKE", "GO_LEFT", "GO_RIGHT"]
-    self.network = None
+    self.network = self.baseline_network()
     return
   
   def baseline_network(self):
@@ -30,11 +30,11 @@ class DQNAgent:
     inputs = Input(shape=self.network_input_shape)
 
     # a layer instance is callable on a tensor, and returns a tensor
-    x = Dense(output_dim=120, activation='relu')(inputs)
+    x = Dense(32, activation='relu')(inputs)
     x = Dropout(0.15)(x)
-    x = Dense(output_dim=120, activation='relu')(x)
+    x = Dense(32, activation='relu')(x)
     x = Dropout(0.15)(x)
-    x = Dense(output_dim=120, activation='relu')(x)
+    x = Dense(32, activation='relu')(x)
     x = Dropout(0.15)(x)
     predictions = Dense(len(self.actions), activation='softmax')(x)
 
@@ -74,7 +74,10 @@ class DQNAgent:
 
   # Implement experience replay technique. Memory can be collected anywhere,
   # it should contain (state, action, next_state, done) entries.
-  def train_on_memory(self, memory):
+  def train_on_memory(self, memory=None):
+    if memory==None:
+      memory = self.memory
+
     if len(memory)>256:
       minibatch = random.sample(memory, 256)
     else:

@@ -89,7 +89,7 @@ class StateSpace:
     else:
       raise RuntimeError("Could not find my car.")
     
-    print_t("My car is {}".format(self.myCar))
+    # print_t("My car is {}".format(self.myCar))
     
     # This is the state of the system that should be returned
     self.state = []
