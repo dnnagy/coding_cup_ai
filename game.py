@@ -61,6 +61,9 @@ class CCGame:
         self.crashed = True
         self.close()
         print_t('CAR CRASHED.')
+      elif 'ALREADY_LOGINED' in self.tick_data['messages']:
+        self.close()
+        print_t('ALREADY LOGINED => CLOSING GAME.')
       else:
         raise ValueError("Messages array is not empty:\n {}".format(self.tick_data['messages']))
     

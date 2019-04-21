@@ -20,7 +20,7 @@ class DQNAgent:
     self.gamma = 0.9
     self.memory = []
     self.learning_rate = 0.0005
-    self.network_input_shape = (1,)
+    self.network_input_shape = (511,)
     self.actions = ["NO_OP", "ACCELERATION", "DECELERATION", "CAR_INDEX_LEFT", "CAR_INDEX_RIGHT", "CLEAR", "FULL_THROTTLE", "EMERGENCY_BRAKE", "GO_LEFT", "GO_RIGHT"]
     self.network = self.baseline_network()
     return
@@ -56,10 +56,10 @@ class DQNAgent:
     
   def train_on_sample(self, state, action, reward, next_state, done):
     # Do a feedforward pass for the current state s to get predicted Q-values for all actions.
-    Q_pred = self.network.predict(state)
+    Q_pred = self.network.predict(state.reshape(1, len(state)))
 
     # Do a feedforward pass for the next state s' and calculate maximum over all network outputs max_{a'}Q(s',a').
-    Q_next_pred = self.network.predict(next_state)
+    Q_next_pred = self.network.predict(next_state.reshape(1, len(next_state)))
 
     # Set Q-value target for action a to r+gamma*max_{a'}Q(s',a')
     # (use the max calculated in step 2). For all other actions, set the Q-value target
@@ -70,7 +70,7 @@ class DQNAgent:
     Q_pred[np.argmax(action)] = target # action is one-hot encoded 
 
     # Update the weights using backpropagation.
-    self.network.fit(state, Q_pred, epochs=1, verbose=0)
+    self.network.fit(state.reshape(1, len(state)), Q_pred, epochs=1, verbose=0)
 
   # Implement experience replay technique. Memory can be collected anywhere,
   # it should contain (state, action, next_state, done) entries.
