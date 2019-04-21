@@ -42,6 +42,7 @@ class StateSpace:
       'RIGHT': 4
     }
     self.myCar = None
+    self.n_features_per_point=11 # number of features in each point is 11
     pass
   
   """
@@ -82,9 +83,9 @@ class StateSpace:
   """
     Build the state of the system, based on the current tick stored in game
   """
-  def stateFromTick(self, game):
-    if len(game.tick_data['cars'])>0:
-      self.myCar = [c for c in game.tick_data['cars'] if c['id']==game.car_id][0]
+  def stateFromTick(self, myCarId, tickData, mapMatrix):
+    if len(tickData['cars'])>0:
+      self.myCar = [c for c in tickData['cars'] if c['id']==myCarId][0]
     else:
       raise RuntimeError("Could not find my car.")
     
@@ -95,14 +96,12 @@ class StateSpace:
     
     # Check if the point is off the map
     def isOffMap(point):
-      if point[0]<0 or point[0]>=60 or point[1]<0 or point[1]>=60:
-        return True
-      return False
+      return (point[0]<0 or point[0]>=60 or point[1]<0 or point[1]>=60)
     
     # Check if a car is on the point
     def carOnPoint(point):
-      if len(game.tick_data['cars'])>=2:
-        for car in game.tick_data['cars']:
+      if len(tickData['cars'])>1:
+        for car in tickData['cars']:
           if car['pos']['x'] == point[0] and car['pos']['y'] == point[1]:
             return {"status": True, "car": car}
         return {"status": False, "car": None}
@@ -110,8 +109,8 @@ class StateSpace:
     
     # Check if a pedestrian is on the point
     def pedestrianOnPoint(point):
-      if len(game.tick_data['pedestrians'])>=2:
-        for ped in game.tick_data['pedestrians']:
+      if len(tickData['pedestrians'])>0:
+        for ped in tickData['pedestrians']:
           if ped['pos']['x'] == point[0] and ped['pos']['y'] == point[1]:
             return {"status": True, "ped": ped}
         return {"status": False, "ped": None}
@@ -119,8 +118,8 @@ class StateSpace:
     
     # Check if a passenger is on the point
     def passengerOnPoint(point):
-      if len(game.tick_data['passengers'])>=2:
-        for pas in game.tick_data['passengers']:
+      if len(tickData['passengers'])>0:
+        for pas in tickData['passengers']:
           if pas['pos']['x'] == point[0] and pas['pos']['y'] == point[1]:
             return {"status": True, "pas": pas}
         return {"status": False, "pas": None}
@@ -133,8 +132,7 @@ class StateSpace:
                   relSeenCoords[k][1]+self.myCar['pos']['y']]
       
       if isOffMap(mapPoint):
-        n_feat=11 # number of features in each point is 11
-        self.state.append([-1 for k in range(n_feat)])
+        self.state.append([-1 for k in range(self.n_features_per_point)])
         continue
         
       car = carOnPoint(mapPoint)
@@ -152,7 +150,7 @@ class StateSpace:
       pasIsInMyCar = -1 if pas['status']==False else int(self.myCar['id']==pas['pas']['car_id'])
       
       stateOfPoint = [
-        game.mapMatrix[mapPoint[0]][mapPoint[1]], # What is the color of this point
+        mapMatrix[mapPoint[1]][mapPoint[0]], # What is the color of this point
         int(car['status']), # Is there any car on this point?
         carDir,
         carSpeed,
